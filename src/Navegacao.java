@@ -1,15 +1,18 @@
 import java.sql.*;
+import java.text.ParseException;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.text.MaskFormatter;
 
 import com.sun.jdi.Value;
 
 public class Navegacao extends JFrame{
-	private JLabel fundo,fundoDoTitulo, label1, label2, label3, label4,icon,icon2;
+	private JLabel fundo, textoTitulo, label1, label2, label3, label4,icon,icon2;
 	private JButton btProx, btAnt, btPrimeiro,btSair, botaoBuscar;
 	private JTextField tfCodigo, tfTitulo, tfGenero, tfAno, textoDeBusca;
+	private MaskFormatter msAno;
 	private BD bd;
 	private PreparedStatement st;
 	private ResultSet resultSet;
@@ -28,25 +31,23 @@ public class Navegacao extends JFrame{
 	
 	public void inicializarComponentes(){
 		setLayout(null);
-		setTitle("Consulta de filmes");
-		setSize(620,400 );
+		setTitle("Consulta de Dados");
+		setSize(620,330);
 		setResizable(false);
 		fundo = new JLabel(new ImageIcon("res//nuvem.jpg.jpg"));
 		fundo.setBounds(0,0,620,400);
+		
+		textoTitulo = new JLabel("Consulta De Dados");
+		textoTitulo.setForeground(new Color(50,99,143));
+		textoTitulo.setHorizontalAlignment(textoTitulo.CENTER);
+		textoTitulo.setFont(new Font("Times New Roman",0,24));
+		textoTitulo.setBounds(196, 23, 200, 35);
+		add(textoTitulo);
 
-		fundoDoTitulo = new JLabel("Consulta De Dados");
-		fundoDoTitulo.setOpaque(true);
-		fundoDoTitulo.setBackground(Color.BLACK);
-		fundoDoTitulo.setForeground(Color.WHITE);
-		fundoDoTitulo.setHorizontalAlignment(fundoDoTitulo.CENTER);
-		fundoDoTitulo.setFont(new Font("Times New Roman",0,24));
-		fundoDoTitulo.setBounds(180, 20, 200, 35);
-		add(fundoDoTitulo);
-
-		label1 = new JLabel("CPF      :");
-		label2 = new JLabel("Nome   :");
+		label1 = new JLabel("CPF    :");
+		label2 = new JLabel("Nome  :");
 		label3 = new JLabel("Gênero :");
-		label4 = new JLabel("Ano      :");
+		label4 = new JLabel("Ano    :");
 		
 		String[] colunasDb = {
 			"Nome",
@@ -56,17 +57,16 @@ public class Navegacao extends JFrame{
 		};
 		
 		coluna = new JComboBox(colunasDb);
-		coluna.setBounds(20,230,100,20);
-		add(coluna);
-		
+		coluna.setBounds(26,170,100,20);
+		add(coluna);	
 		
 		textoDeBusca = new JTextField(10);
 		textoDeBusca.setVisible(true);
-		textoDeBusca.setBounds(130,230,100,20);
+		textoDeBusca.setBounds(26,200,100,20);
 		add(textoDeBusca);
 		
 		botaoBuscar = new JButton("Buscar");
-		botaoBuscar.setBounds(250,230,100,20);
+		botaoBuscar.setBounds(26,230,100,20);
 		add(botaoBuscar);
 		icon = new JLabel();
 		icon2 = new JLabel();
@@ -77,51 +77,55 @@ public class Navegacao extends JFrame{
 		tfGenero = new JTextField(15);
 		tfGenero.setEditable(false);
 		tfAno = new JTextField(10);
+		tfAno.setEditable(false);
 		btProx = new JButton("Próximo");
 		btAnt = new JButton("Anterior");
 		btPrimeiro = new JButton("Primeiro");
 		btSair = new JButton("Sair");
 		
-		
-		label1.setBounds(142,100,80,30);
-		label1.setHorizontalAlignment(fundoDoTitulo.CENTER);
+		label1.setBounds(142,94,80,30);
+		label1.setHorizontalAlignment(textoTitulo.CENTER);
+		label1.setForeground(new Color(70,132,189));
 		label1.setFont(new Font("Times New Roman",0,20));
 		add(label1);
 		
-		tfCodigo.setBounds(230,104,100,20);
+		tfCodigo.setBounds(230,98,100,20);
 		add(tfCodigo);
 		
 		label2.setBounds(150,70,70,30);
-		label2.setHorizontalAlignment(fundoDoTitulo.CENTER);
+		label2.setHorizontalAlignment(textoTitulo.CENTER);
+		label2.setForeground(new Color(70,132,189));
 		label2.setFont(new Font("Times New Roman",0,20));
 		add(label2);
 		
 		tfTitulo.setBounds(230,75,300,20);
 		add(tfTitulo);
 		
-		label3.setBounds(350,100,70,30);
-		label3.setHorizontalAlignment(fundoDoTitulo.CENTER);
+		label3.setBounds(350,94,70,30);
+		label3.setHorizontalAlignment(textoTitulo.CENTER);
+		label3.setForeground(new Color(70,132,189));
 		label3.setFont(new Font("Times New Roman",0,20));
 		add(label3);
 		
-		tfGenero.setBounds(430,104,100,20);
+		tfGenero.setBounds(430,98,100,20);
 		add(tfGenero);
 		
-		label4.setBounds(147,130,70,30);
-		label4.setHorizontalAlignment(fundoDoTitulo.CENTER);
+		label4.setBounds(147,116,70,30);
+		label4.setHorizontalAlignment(textoTitulo.CENTER);
+		label4.setForeground(new Color(70,132,189));
 		label4.setFont(new Font("Times New Roman",0,20));
 		add(label4);
 		
-		tfAno.setBounds(230,135,100,20);
+		tfAno.setBounds(230,122,100,20);
 		add(tfAno);
 		
-		btPrimeiro.setBounds(255,325,100,25);
+		btPrimeiro.setBounds(470,165,100,25);
 		add(btPrimeiro);
 		
-		btAnt.setBounds(20,325,99,25);
+		btAnt.setBounds(470,194,99,25);
 		add(btAnt);
 		
-		btProx.setBounds(470,325, 100, 25);
+		btProx.setBounds(470,223, 100, 25);
 		add(btProx);
 		add(btSair);
 
@@ -132,7 +136,7 @@ public class Navegacao extends JFrame{
 			System.exit(0);
 		}
 		carregarTabela();
-		atualizarCampos();
+		atualizarCampos();	
 
 	}
 	
@@ -232,16 +236,16 @@ public class Navegacao extends JFrame{
 		try {
 			if(resultSet.getString("Genero").equals("Masculino")) {
 				icon.setIcon(new ImageIcon("res//man.png"));
-				icon.setBounds(20,50,100,100);
+				icon.setBounds(20,50,110,110);
 				icon.setVisible(true);
 				icon2.setVisible(false);
 				add(icon);
 				add(fundo);
-				System.out.println("man");
+				System.out.println("Man");
 			}
 			else {
 				icon2.setIcon(new ImageIcon("res//mulher1.png"));
-				icon2.setBounds(20,50,100,100);
+				icon2.setBounds(20,50,110,110);
 				icon2.setVisible(true);
 				icon.setVisible(false);
 				add(icon2);
